@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Time Tracker - Art Project</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #ffffff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      transition: background-color 0.5s ease;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 800px;
+      width: 90%;
+      padding: 20px;
+    }
+
+    .title {
+      color: #333;
+      margin-bottom: 30px;
+      font-weight: 300;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+    }
+
+    .icon-container {
+      margin: 40px auto;
+      position: relative;
+      width: 200px;
+      height: 200px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .tiktok-icon {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: all 0.4s ease;
+      filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
+    }
+
+
+    .tiktok-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .tiktok-icon:active {
+      transform: scale(0.9);
+    }
+
+    .loading-container {
+      display: none;
+      margin: 40px auto;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading-container .timer {
+      margin-top: 20px;
+    }
+
+    .spinner {
+      width: 100px;
+      height: 100px;
+      border: 8px solid rgba(254, 44, 85, 0.2);
+      border-top: 8px solid #FE2C55;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 30px;
+    }
+
+    .timer-container {
+      display: none;
+      margin-top: 40px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 1s ease;
+    }
+
+    .timer {
+      font-size: 4rem;
+      font-weight: 300;
+      color: #000000;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .timer-label {
+      font-size: 1.2rem;
+      color: #666;
+      font-weight: 300;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+    }
+
+    .reset-btn {
+      background-color: #FE2C55;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(254, 44, 85, 0.3);
+    }
+
+    .reset-btn:hover {
+      background-color: #ff1a4d;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(254, 44, 85, 0.4);
+    }
+
+    .reset-btn:active {
+      transform: translateY(0);
+    }
+
+    .instructions {
+      color: #888;
+      font-size: 1rem;
+      margin-top: 50px;
+      line-height: 1.5;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Animation for the icon when clicked */
+    .icon-clicked {
+      animation: iconShrink 0.5s forwards;
+    }
+
+    @keyframes iconShrink {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .icon-container {
+        width: 150px;
+        height: 150px;
+      }
+
+      .timer {
+        font-size: 3rem;
+      }
+
+      .title {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .icon-container {
+        width: 120px;
+        height: 120px;
+      }
+
+      .timer {
+        font-size: 2.5rem;
+      }
+
+      .title {
+        font-size: 1.3rem;
+      }
+
+      .container {
+        width: 95%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="icon-container" id="tiktokIconContainer">
+      <img src="./tiktokicon.png" alt="TikTok Icon" class="tiktok-icon" />
+    </div>
+
+
+    <div class="loading-container" id="loadingContainer">
+      <div class="spinner"></div>
+      <div class="timer" id="timerDisplay">00:00:00</div>
+      <p class="timer-label">Time spent on TikTok</p>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    TikTok Time Tracker - Art Project by Sara Trajer
+  </div>
+
+  <script>
+    // DOM elements
+    const tiktokIconContainer = document.getElementById('tiktokIconContainer');
+    const loadingContainer = document.getElementById('loadingContainer');
+    const timerDisplay = document.getElementById('timerDisplay');
+
+    // Timer variables
+    let timerInterval = null;
+    let minutes = 0;
+    let hours = 0;
+    let isTimerRunning = false;
+    let delay = 1000;          // starting delay (ms)
+    let speedUpStep = 20;     // how much faster every second (ms)
+    let minDelay = 1;       // fastest allowed speed (ms)
+
+    let timerTimeout = null;
+
+
+    // Format time to always show two digits
+    function formatTime(value) {
+      return value < 10 ? `0${value}` : value;
+    }
+
+    // Update the timer display
+    function updateTimerDisplay() {
+      timerDisplay.textContent = `${formatTime(hours)} h ${formatTime(minutes)} min`;
+    }
+
+    // Start the timer
+    function startTimer() {
+      if (isTimerRunning) return;
+      isTimerRunning = true;
+
+      function tick() {
+        minutes++;
+
+        if (minutes >= 60) {
+          minutes = 0;
+          hours++;
+        }
+
+        updateTimerDisplay();
+
+        // speed up
+        if (delay > minDelay) {
+          if (delay - speedUpStep <= minDelay) {
+            delay -= 1; // creep down smoothly
+          } else {
+            delay -= speedUpStep;
+          }
+        }
+
+
+        timerTimeout = setTimeout(tick, delay);
+      }
+
+      tick(); // start immediately
+    }
+
+
+    // Handle TikTok icon click
+    tiktokIconContainer.addEventListener('click', function () {
+      this.classList.add('icon-clicked');
+
+      setTimeout(() => {
+        this.style.display = 'none';
+
+        // Show spinner + timer permanently
+        loadingContainer.style.display = 'flex';
+
+        // Start timer immediately
+        startTimer();
+
+        // Subtle background shift
+        document.body.style.backgroundColor = '#f9f9f9';
+      }, 500);
+    });
+
+
+    // Initialize timer display
+    updateTimerDisplay();
+
+  </script>
+</body>
+
+</html>
