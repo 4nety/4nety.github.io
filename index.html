@@ -1,338 +1,762 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TikTok Time Tracker - Art Project</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: #ffffff;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      transition: background-color 0.5s ease;
-    }
-
-    .container {
-      text-align: center;
-      max-width: 800px;
-      width: 90%;
-      padding: 20px;
-    }
-
-    .title {
-      color: #333;
-      margin-bottom: 30px;
-      font-weight: 300;
-      font-size: 1.8rem;
-      letter-spacing: 1px;
-    }
-
-    .icon-container {
-      margin: 40px auto;
-      position: relative;
-      width: 200px;
-      height: 200px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .tiktok-icon {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      transition: all 0.4s ease;
-      filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
-    }
-
-
-    .tiktok-icon:hover {
-      transform: scale(1.1);
-    }
-
-    .tiktok-icon:active {
-      transform: scale(0.9);
-    }
-
-    .loading-container {
-      display: none;
-      margin: 40px auto;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .loading-container .timer {
-      margin-top: 20px;
-    }
-
-    .spinner {
-      width: 100px;
-      height: 100px;
-      border: 8px solid rgba(254, 44, 85, 0.2);
-      border-top: 8px solid #FE2C55;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 30px;
-    }
-
-    .timer-container {
-      display: none;
-      margin-top: 40px;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 1s ease;
-    }
-
-    .timer {
-      font-size: 4rem;
-      font-weight: 300;
-      color: #000000;
-      letter-spacing: 3px;
-      margin-bottom: 20px;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .timer-label {
-      font-size: 1.2rem;
-      color: #666;
-      font-weight: 300;
-      letter-spacing: 2px;
-      margin-bottom: 40px;
-    }
-
-    .reset-btn {
-      background-color: #FE2C55;
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 50px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(254, 44, 85, 0.3);
-    }
-
-    .reset-btn:hover {
-      background-color: #ff1a4d;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(254, 44, 85, 0.4);
-    }
-
-    .reset-btn:active {
-      transform: translateY(0);
-    }
-
-    .instructions {
-      color: #888;
-      font-size: 1rem;
-      margin-top: 50px;
-      line-height: 1.5;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .footer {
-      position: absolute;
-      bottom: 20px;
-      width: 100%;
-      text-align: center;
-      color: #aaa;
-      font-size: 0.9rem;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Animation for the icon when clicked */
-    .icon-clicked {
-      animation: iconShrink 0.5s forwards;
-    }
-
-    @keyframes iconShrink {
-      0% {
-        transform: scale(1);
-        opacity: 1;
-      }
-
-      100% {
-        transform: scale(0);
-        opacity: 0;
-      }
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .icon-container {
-        width: 150px;
-        height: 150px;
-      }
-
-      .timer {
-        font-size: 3rem;
-      }
-
-      .title {
-        font-size: 1.5rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .icon-container {
-        width: 120px;
-        height: 120px;
-      }
-
-      .timer {
-        font-size: 2.5rem;
-      }
-
-      .title {
-        font-size: 1.3rem;
-      }
-
-      .container {
-        width: 95%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Algorithm Experience</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+        
+        /* Initial screen with Instagram logo */
+        .initial-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+        
+        .instagram-icon {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            border-radius: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .instagram-icon:hover {
+            transform: scale(1.05);
+        }
+        
+        .instagram-icon:active {
+            transform: scale(0.95);
+        }
+        
+        .instagram-icon i {
+            color: white;
+            font-size: 60px;
+        }
+        
+        .click-instruction {
+            margin-top: 30px;
+            color: #8e8e8e;
+            font-size: 16px;
+            font-weight: 400;
+            text-align: center;
+        }
+        
+        /* Camera access request screen */
+        .camera-permission-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #000000;
+            color: white;
+            z-index: 90;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .camera-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+        
+        .permission-text {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            max-width: 500px;
+        }
+        
+        .permission-instruction {
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 40px;
+            max-width: 500px;
+        }
+        
+        .allow-btn {
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .allow-btn:hover {
+            background-color: #0081d6;
+        }
+        
+        /* Camera feed screen */
+        .camera-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            background-color: #000000;
+            z-index: 80;
+        }
+        
+        #camera-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Instagram UI overlay */
+        .instagram-ui {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 85;
+            pointer-events: none;
+        }
+        
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+            pointer-events: auto;
+        }
+        
+        .username {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .menu-icon {
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        /* Instagram buttons on the left side (mirrored) */
+        .action-buttons {
+            position: absolute;
+            left: 15px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            pointer-events: auto;
+        }
+        
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .action-button i {
+            font-size: 28px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+        
+        .action-button .count {
+            font-size: 13px;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+        }
+        
+        .music-info {
+            position: absolute;
+            left: 15px;
+            bottom: 30px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            pointer-events: auto;
+        }
+        
+        .music-icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+        
+        /* Video info on the right */
+        .video-info {
+            position: absolute;
+            right: 15px;
+            bottom: 100px;
+            max-width: 70%;
+            color: white;
+            pointer-events: auto;
+        }
+        
+        .video-caption {
+            font-size: 15px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+        }
+        
+        .hashtags {
+            font-size: 14px;
+            color: #a0a0ff;
+        }
+        
+        /* Progress dots at the bottom */
+        .progress-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            z-index: 10;
+        }
+        
+        .progress-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .progress-dot.active {
+            background-color: #ffffff;
+            transform: scale(1.2);
+        }
+        
+        /* Swipe instruction */
+        .swipe-instruction {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            pointer-events: none;
+        }
+        
+        .swipe-icon {
+            margin-right: 8px;
+            font-size: 16px;
+            animation: swipeUp 2s infinite;
+        }
+        
+        /* End screen */
+        .end-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #000000;
+            color: white;
+            z-index: 95;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .end-icon {
+            font-size: 70px;
+            margin-bottom: 30px;
+            color: #ff3040;
+        }
+        
+        .end-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            max-width: 600px;
+        }
+        
+        .end-message {
+            font-size: 22px;
+            line-height: 1.5;
+            max-width: 600px;
+            color: #aaa;
+        }
+        
+        /* Swipe animation */
+        @keyframes swipeUp {
+            0%, 100% { transform: translateY(0); opacity: 0.7; }
+            50% { transform: translateY(-10px); opacity: 1; }
+        }
+        
+        /* Swipe transition animation */
+        .swipe-up {
+            animation: swipeUpTransition 0.5s forwards;
+        }
+        
+        @keyframes swipeUpTransition {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100%); opacity: 0; }
+        }
+        
+        .swipe-down {
+            animation: swipeDownTransition 0.5s forwards;
+        }
+        
+        @keyframes swipeDownTransition {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(100%); opacity: 0; }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .action-buttons {
+                bottom: 120px;
+            }
+            
+            .video-info {
+                bottom: 120px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <div class="container">
-
-    <div class="icon-container" id="tiktokIconContainer">
-      <img src="./tiktokicon.png" alt="TikTok Icon" class="tiktok-icon" />
+    <!-- Initial screen with Instagram icon -->
+    <div class="initial-screen" id="initialScreen">
+        <div class="instagram-icon" id="instagramIcon">
+            <i class="fab fa-instagram"></i>
+        </div>
+        <p class="click-instruction">Click the Instagram icon to begin</p>
+    </div>
+    
+    <!-- Camera permission screen -->
+    <div class="camera-permission-screen" id="cameraPermissionScreen">
+        <div class="camera-icon">
+            <i class="fas fa-camera"></i>
+        </div>
+        <h1 class="permission-text">Instagram needs access to your camera</h1>
+        <p class="permission-instruction">To show the camera feed, please allow access to your camera. This experience works best with a working camera, but will use a placeholder if camera is not available.</p>
+        <button class="allow-btn" id="allowCameraBtn">Allow Camera Access</button>
+    </div>
+    
+    <!-- Camera feed screen -->
+    <div class="camera-screen" id="cameraScreen">
+        <video id="camera-feed" autoplay playsinline></video>
+    </div>
+    
+    <!-- Instagram UI overlay -->
+    <div class="instagram-ui" id="instagramUI">
+        <div class="top-bar">
+            <div class="username">algorithm_experience</div>
+            <div class="menu-icon">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <div class="action-button" id="likeButton">
+                <i class="far fa-heart"></i>
+                <div class="count" id="likeCount">12.4K</div>
+            </div>
+            <div class="action-button" id="commentButton">
+                <i class="far fa-comment"></i>
+                <div class="count" id="commentCount">1.2K</div>
+            </div>
+            <div class="action-button" id="shareButton">
+                <i class="far fa-paper-plane"></i>
+                <div class="count" id="shareCount">548</div>
+            </div>
+        </div>
+        
+        <div class="music-info">
+            <i class="fas fa-music music-icon"></i>
+            <span>Original Audio - algorithm_experience</span>
+        </div>
+        
+        <div class="video-info">
+            <div class="video-caption" id="videoCaption">Exploring the depths of the algorithm. What happens when you reach the end? #algorithm #instagram #experience</div>
+            <div class="hashtags">#digitalart #socialmedia #artproject #explorepage</div>
+        </div>
+        
+        <div class="progress-dots" id="progressDots">
+            <!-- Dots will be generated by JavaScript -->
+        </div>
+        
+        <div class="swipe-instruction">
+            <i class="fas fa-arrow-up swipe-icon"></i>
+            <span>Swipe up for next video</span>
+        </div>
+    </div>
+    
+    <!-- End screen -->
+    <div class="end-screen" id="endScreen">
+        <div class="end-icon">
+            <i class="fas fa-skull-crossbones"></i>
+        </div>
+        <h1 class="end-title">You've reached the end of the algorithm.</h1>
+        <p class="end-message">Your services are no longer needed.<br>Rest my child.</p>
     </div>
 
-
-    <div class="loading-container" id="loadingContainer">
-      <div class="spinner"></div>
-      <div class="timer" id="timerDisplay">00:00:00</div>
-      <p class="timer-label">Time spent on TikTok</p>
-    </div>
-
-  </div>
-
-  <div class="footer">
-    TikTok Time Tracker - Art Project by Sara Trajer
-  </div>
-
-  <script>
-    // DOM elements
-    const tiktokIconContainer = document.getElementById('tiktokIconContainer');
-    const loadingContainer = document.getElementById('loadingContainer');
-    const timerDisplay = document.getElementById('timerDisplay');
-
-    // Timer variables
-    let timerInterval = null;
-    let minutes = 0;
-    let hours = 0;
-    let isTimerRunning = false;
-    let delay = 1000;          // starting delay (ms)
-    let speedUpStep = 20;     // how much faster every second (ms)
-    let minDelay = 1;       // fastest allowed speed (ms)
-
-    let timerTimeout = null;
-
-
-    // Format time to always show two digits
-    function formatTime(value) {
-      return value < 10 ? `0${value}` : value;
-    }
-
-    // Update the timer display
-    function updateTimerDisplay() {
-      timerDisplay.textContent = `${formatTime(hours)} h ${formatTime(minutes)} min`;
-    }
-
-    // Start the timer
-    function startTimer() {
-      if (isTimerRunning) return;
-      isTimerRunning = true;
-
-      function tick() {
-        minutes++;
-
-        if (minutes >= 60) {
-          minutes = 0;
-          hours++;
+    <script>
+        // DOM Elements
+        const initialScreen = document.getElementById('initialScreen');
+        const instagramIcon = document.getElementById('instagramIcon');
+        const cameraPermissionScreen = document.getElementById('cameraPermissionScreen');
+        const allowCameraBtn = document.getElementById('allowCameraBtn');
+        const cameraScreen = document.getElementById('cameraScreen');
+        const cameraFeed = document.getElementById('camera-feed');
+        const instagramUI = document.getElementById('instagramUI');
+        const endScreen = document.getElementById('endScreen');
+        
+        // Button elements
+        const likeButton = document.getElementById('likeButton');
+        const commentButton = document.getElementById('commentButton');
+        const shareButton = document.getElementById('shareButton');
+        const likeCount = document.getElementById('likeCount');
+        const commentCount = document.getElementById('commentCount');
+        const shareCount = document.getElementById('shareCount');
+        const videoCaption = document.getElementById('videoCaption');
+        const progressDots = document.getElementById('progressDots');
+        
+        // State variables
+        let currentVideoIndex = 0;
+        let swipeCount = 0;
+        const totalVideos = 10;
+        let isCameraActive = false;
+        
+        // Video captions for each "video"
+        const videoCaptions = [
+            "Just another day in the algorithm #fyp #viral",
+            "When you realize you've been scrolling for hours #relatable #instagram",
+            "The algorithm knows what you want before you do #creepy #technology",
+            "Digital art meets social media reality #artproject #meta",
+            "How many videos have you watched today? #addiction #screenTime",
+            "The endless scroll continues... #infinite #loop",
+            "What happens when you reach the end? #question #philosophy",
+            "Data is the new currency #privacy #digitalage",
+            "Your attention is the product #socialmedia #truth",
+            "The final video before the end #lastone #algorithm"
+        ];
+        
+        // Generate progress dots
+        for (let i = 0; i < totalVideos; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'progress-dot';
+            if (i === 0) dot.classList.add('active');
+            progressDots.appendChild(dot);
         }
-
-        updateTimerDisplay();
-
-        // speed up
-        if (delay > minDelay) {
-          if (delay - speedUpStep <= minDelay) {
-            delay -= 1; // creep down smoothly
-          } else {
-            delay -= speedUpStep;
-          }
+        
+        // Update progress dots
+        function updateProgressDots() {
+            const dots = document.querySelectorAll('.progress-dot');
+            dots.forEach((dot, index) => {
+                if (index === currentVideoIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
         }
-
-
-        timerTimeout = setTimeout(tick, delay);
-      }
-
-      tick(); // start immediately
-    }
-
-
-    // Handle TikTok icon click
-    tiktokIconContainer.addEventListener('click', function () {
-      this.classList.add('icon-clicked');
-
-      setTimeout(() => {
-        this.style.display = 'none';
-
-        // Show spinner + timer permanently
-        loadingContainer.style.display = 'flex';
-
-        // Start timer immediately
-        startTimer();
-
-        // Subtle background shift
-        document.body.style.backgroundColor = '#f9f9f9';
-      }, 500);
-    });
-
-
-    // Initialize timer display
-    updateTimerDisplay();
-
-  </script>
+        
+        // Update button counts with random numbers
+        function updateButtonCounts() {
+            // Generate random counts that look realistic
+            const likeNum = Math.floor(Math.random() * 50000) + 5000;
+            const commentNum = Math.floor(Math.random() * 5000) + 500;
+            const shareNum = Math.floor(Math.random() * 3000) + 200;
+            
+            // Format numbers with K/M suffixes
+            likeCount.textContent = formatNumber(likeNum);
+            commentCount.textContent = formatNumber(commentNum);
+            shareCount.textContent = formatNumber(shareNum);
+            
+            // Update video caption
+            videoCaption.textContent = videoCaptions[currentVideoIndex];
+        }
+        
+        // Format numbers for display
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        // Request camera access
+        function requestCameraAccess() {
+            // Check if browser supports mediaDevices
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Your browser doesn't support camera access. The experience will continue with a placeholder.");
+                startInstagramExperience();
+                return;
+            }
+            
+            // Request camera access
+            navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'user',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                } 
+            })
+            .then(stream => {
+                // Success: show camera feed
+                cameraFeed.srcObject = stream;
+                isCameraActive = true;
+                startInstagramExperience();
+            })
+            .catch(error => {
+                // Error: continue without camera
+                console.error("Camera access error:", error);
+                alert("Unable to access camera. The experience will continue with a placeholder.");
+                startInstagramExperience();
+            });
+        }
+        
+        // Start the Instagram experience
+        function startInstagramExperience() {
+            // Hide permission screen, show camera and UI
+            cameraPermissionScreen.style.display = 'none';
+            cameraScreen.style.display = 'block';
+            instagramUI.style.display = 'block';
+            
+            // Initialize button counts
+            updateButtonCounts();
+            
+            // Set up touch events for swiping
+            setupSwipeEvents();
+            
+            // Set up button click events
+            setupButtonEvents();
+        }
+        
+        // Set up touch events for swiping
+        function setupSwipeEvents() {
+            let startY = 0;
+            let endY = 0;
+            
+            // For touch devices
+            document.addEventListener('touchstart', e => {
+                startY = e.touches[0].clientY;
+            });
+            
+            document.addEventListener('touchmove', e => {
+                endY = e.touches[0].clientY;
+            });
+            
+            document.addEventListener('touchend', e => {
+                handleSwipe(startY, endY);
+            });
+            
+            // For mouse devices (drag)
+            let isMouseDown = false;
+            
+            document.addEventListener('mousedown', e => {
+                isMouseDown = true;
+                startY = e.clientY;
+            });
+            
+            document.addEventListener('mousemove', e => {
+                if (!isMouseDown) return;
+                endY = e.clientY;
+            });
+            
+            document.addEventListener('mouseup', e => {
+                if (!isMouseDown) return;
+                isMouseDown = false;
+                handleSwipe(startY, endY);
+            });
+        }
+        
+        // Handle swipe gesture
+        function handleSwipe(startY, endY) {
+            const swipeThreshold = 50; // Minimum swipe distance
+            
+            // Swipe up (next video)
+            if (startY - endY > swipeThreshold) {
+                swipeToNextVideo();
+            }
+            // Swipe down (previous video)
+            else if (endY - startY > swipeThreshold) {
+                swipeToPreviousVideo();
+            }
+        }
+        
+        // Swipe to next video
+        function swipeToNextVideo() {
+            // Increment counters
+            currentVideoIndex = (currentVideoIndex + 1) % totalVideos;
+            swipeCount++;
+            
+            // Update UI
+            updateProgressDots();
+            updateButtonCounts();
+            
+            // Add swipe animation
+            instagramUI.classList.add('swipe-up');
+            setTimeout(() => {
+                instagramUI.classList.remove('swipe-up');
+            }, 500);
+            
+            // Check if we've reached the end
+            if (swipeCount >= totalVideos) {
+                // Show end screen after a delay
+                setTimeout(() => {
+                    endExperience();
+                }, 800);
+            }
+        }
+        
+        // Swipe to previous video (not used in the flow but implemented for completeness)
+        function swipeToPreviousVideo() {
+            if (currentVideoIndex > 0) {
+                currentVideoIndex--;
+                updateProgressDots();
+                updateButtonCounts();
+                
+                // Add swipe animation
+                instagramUI.classList.add('swipe-down');
+                setTimeout(() => {
+                    instagramUI.classList.remove('swipe-down');
+                }, 500);
+            }
+        }
+        
+        // Set up button click events
+        function setupButtonEvents() {
+            // Like button
+            likeButton.addEventListener('click', () => {
+                // Generate a random increment
+                const currentLikes = parseInt(likeCount.textContent.replace(/[KM]/, '')) * (likeCount.textContent.includes('K') ? 1000 : likeCount.textContent.includes('M') ? 1000000 : 1);
+                const newLikes = currentLikes + Math.floor(Math.random() * 100) + 50;
+                likeCount.textContent = formatNumber(newLikes);
+                
+                // Change icon to filled heart
+                const heartIcon = likeButton.querySelector('i');
+                heartIcon.className = 'fas fa-heart';
+                heartIcon.style.color = '#ff3040';
+                
+                // Revert after a moment
+                setTimeout(() => {
+                    heartIcon.className = 'far fa-heart';
+                    heartIcon.style.color = 'white';
+                }, 300);
+            });
+            
+            // Comment button
+            commentButton.addEventListener('click', () => {
+                // Generate a random increment
+                const currentComments = parseInt(commentCount.textContent.replace(/[KM]/, '')) * (commentCount.textContent.includes('K') ? 1000 : commentCount.textContent.includes('M') ? 1000000 : 1);
+                const newComments = currentComments + Math.floor(Math.random() * 50) + 20;
+                commentCount.textContent = formatNumber(newComments);
+                
+                // Add visual feedback
+                commentButton.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    commentButton.style.transform = 'scale(1)';
+                }, 200);
+            });
+            
+            // Share button
+            shareButton.addEventListener('click', () => {
+                // Generate a random increment
+                const currentShares = parseInt(shareCount.textContent.replace(/[KM]/, '')) * (shareCount.textContent.includes('K') ? 1000 : shareCount.textContent.includes('M') ? 1000000 : 1);
+                const newShares = currentShares + Math.floor(Math.random() * 30) + 10;
+                shareCount.textContent = formatNumber(newShares);
+                
+                // Add visual feedback
+                shareButton.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    shareButton.style.transform = 'scale(1)';
+                }, 200);
+                
+                // Simulate share action
+                alert("Link copied to clipboard! (Simulation)");
+            });
+        }
+        
+        // End the experience
+        function endExperience() {
+            // Hide Instagram UI and camera
+            instagramUI.style.display = 'none';
+            cameraScreen.style.display = 'none';
+            
+            // Stop camera stream if active
+            if (isCameraActive && cameraFeed.srcObject) {
+                const tracks = cameraFeed.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+            }
+            
+            // Show end screen
+            endScreen.style.display = 'flex';
+        }
+        
+        // Event Listeners
+        instagramIcon.addEventListener('click', () => {
+            // Hide initial screen
+            initialScreen.style.opacity = '0';
+            setTimeout(() => {
+                initialScreen.style.display = 'none';
+                // Show camera permission screen
+                cameraPermissionScreen.style.display = 'flex';
+            }, 500);
+        });
+        
+        allowCameraBtn.addEventListener('click', requestCameraAccess);
+        
+        // Initialize
+        updateButtonCounts();
+    </script>
 </body>
-
 </html>
