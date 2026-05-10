@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram Algorithm Experience</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #ffffff;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    /* Initial screen */
+    .initial-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff;
+      z-index: 100;
+      transition: opacity 0.5s ease;
+    }
+
+    .fa-instagram { transform: scale(1.7); }
+
+    .instagram-icon {
+      width: 120px; height: 120px;
+      background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+      border-radius: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .instagram-icon:hover { transform: scale(1.1); }
+    .instagram-icon:active { transform: scale(0.90); }
+    .instagram-icon i { color: white; font-size: 60px; }
+
+    .click-instruction {
+      margin-top: 30px;
+      color: #8e8e8e;
+      font-size: 16px;
+      font-weight: 400;
+      text-align: center;
+    }
+
+    /* ─── TERMS & CONDITIONS SCREEN ─── */
+    .terms-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none;
+      flex-direction: column;
+      background-color: #fafafa;
+      z-index: 98;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .terms-header {
+      flex-shrink: 0;
+      padding: 18px 20px 12px;
+      border-bottom: 1px solid #dbdbdb;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .terms-header-logo {
+      width: 32px; height: 32px;
+      background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .terms-header-logo i { color: #fff; font-size: 18px; }
+
+    .terms-header-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #262626;
+    }
+    .terms-header-subtitle {
+      font-size: 11px;
+      color: #8e8e8e;
+    }
+
+    .terms-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 18px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .terms-section-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #262626;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 14px 0 4px;
+    }
+    .terms-section-title:first-child { margin-top: 0; }
+
+    .terms-text {
+      font-size: 8.5px;
+      line-height: 1.55;
+      color: #444;
+    }
+
+    .terms-text + .terms-text { margin-top: 5px; }
+
+    .terms-highlight {
+      font-size: 8.5px;
+      line-height: 1.55;
+      color: #262626;
+      font-weight: 600;
+    }
+
+    .terms-footer {
+      flex-shrink: 0;
+      padding: 12px 18px 16px;
+      border-top: 1px solid #dbdbdb;
+      background: #fff;
+    }
+
+    .terms-checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .terms-checkbox-row input[type="checkbox"] {
+      margin-top: 2px;
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: #0095f6;
+    }
+    .terms-checkbox-row label {
+      font-size: 9px;
+      color: #555;
+      line-height: 1.5;
+      cursor: pointer;
+    }
+    .terms-checkbox-row label a {
+      color: #0095f6;
+      text-decoration: none;
+    }
+
+    .terms-accept-btn {
+      width: 100%;
+      background-color: #0095f6;
+      color: #fff;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, opacity 0.2s;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    .terms-accept-btn.enabled {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .terms-accept-btn.enabled:hover { background-color: #0081d6; }
+    .terms-accept-btn.enabled:active { background-color: #006cbf; }
+
+    .terms-version {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 7.5px;
+      color: #bbb;
+    }
+
+    /* Camera permission screen */
+    .camera-permission-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #000000;
+      color: white;
+      z-index: 90;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .camera-icon { font-size: 80px; margin-bottom: 30px; color: #ffffff; }
+    .permission-text { font-size: 24px; font-weight: 600; margin-bottom: 20px; max-width: 500px; }
+    .permission-instruction { font-size: 16px; color: #aaa; margin-bottom: 40px; max-width: 500px; }
+    .allow-btn {
+      background-color: #0095f6; color: white; border: none;
+      padding: 15px 40px; border-radius: 10px; font-size: 18px;
+      font-weight: 600; cursor: pointer; transition: background-color 0.3s;
+    }
+    .allow-btn:hover { background-color: #0081d6; }
+
+    /* Camera feed */
+    .camera-screen {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none; background-color: #000; z-index: 80;
+    }
+    #camera-feed {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    /* Instagram UI overlay */
+    .instagram-ui {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none; z-index: 85; pointer-events: none;
+    }
+
+    .top-bar {
+      position: absolute; top: 0; left: 0; width: 100%;
+      padding: 15px;
+      display: flex; justify-content: space-between; align-items: center;
+      color: white;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+      pointer-events: auto;
+    }
+    .username { transform: scaleX(-1); unicode-bidi: bidi-override; direction: rtl; font-weight: 600; font-size: 16px; }
+    .menu-icon { font-size: 20px; cursor: pointer; }
+
+    .action-buttons {
+      transform: scaleX(-1); unicode-bidi: bidi-override; direction: rtl;
+      position: absolute; left: 15px; bottom: 100px;
+      display: flex; flex-direction: column; align-items: center; gap: 25px;
+      pointer-events: auto;
+    }
+    .action-button { display: flex; flex-direction: column; align-items: center; color: white; cursor: pointer; }
+    .action-button i { font-size: 28px; margin-bottom: 5px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+    .action-button .count { font-size: 13px; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.7); }
+
+    .music-info {
+      transform: scaleX(-1); unicode-bidi: bidi-override; direction: rtl;
+      position: absolute; left: 15px; bottom: 30px;
+      color: white; font-size: 14px; font-weight: 500;
+      display: flex; align-items: center; pointer-events: auto;
+    }
+    .music-icon { margin-right: 8px; font-size: 16px; }
+
+    .video-info {
+      transform: scaleX(-1); unicode-bidi: bidi-override; direction: rtl;
+      position: absolute; right: 15px; bottom: 100px;
+      max-width: 70%; color: white; pointer-events: auto;
+    }
+    .video-caption {
+      transform: scaleX(-1); unicode-bidi: bidi-override; direction: rtl;
+      font-size: 15px; margin-bottom: 10px; line-height: 1.4;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+    }
+    .hashtags {
+      transform: scaleX(-1); unicode-bidi: bidi-override; direction: rtl;
+      font-size: 14px; color: #a0a0ff;
+    }
+
+    .progress-dots {
+      position: absolute; bottom: 20px; left: 0; width: 100%;
+      display: flex; justify-content: center; gap: 6px; z-index: 10;
+    }
+    .progress-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background-color: rgba(255,255,255,0.4); transition: all 0.3s ease;
+    }
+    .progress-dot.active { background-color: #ffffff; transform: scale(1.2); }
+
+    .swipe-instruction {
+      transform: scaleX(-1); unicode-bidi: bidi-override; direction: rtl;
+      position: absolute; bottom: 50px; left: 0; width: 100%;
+      display: flex; justify-content: center; align-items: center;
+      color: rgba(255,255,255,0.7); font-size: 14px; pointer-events: none;
+    }
+    .swipe-icon { margin-right: 8px; font-size: 16px; animation: swipeUp 2s infinite; }
+
+    /* End screen */
+    .end-screen {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      background-color: #000;
+      color: white;
+      z-index: 95;
+      padding: 40px;
+      font-family: 'Courier New', 'Consolas', Monaco, monospace !important;
+    }
+    .end-screen * { font-family: 'Courier New', 'Consolas', Monaco, monospace !important; }
+
+    .typing-container {
+      font-size: 28px; line-height: 1.4;
+      text-align: left; max-width: 600px; position: relative;
+    }
+    .typing-line {
+      display: block; min-height: 40px; margin-bottom: 10px;
+      text-align: center; opacity: 0; transform: translateY(10px);
+      animation: fadeInUp 0.3s forwards;
+    }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+    .cursor {
+      display: inline-block; margin-left: 2px;
+      animation: blink 0.6s infinite;
+      position: static !important; top: auto !important; left: auto !important;
+    }
+    @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+
+    .footer {
+      position: absolute; bottom: 20px; width: 100%;
+      text-align: center; color: #aaa; font-size: 0.9rem; z-index: 200;
+    }
+
+    @media (max-width: 768px) {
+      .typing-container { font-size: 20px; }
+      .typing-line { min-height: 30px; }
+      .action-buttons { bottom: 120px; }
+      .video-info { bottom: 120px; }
+    }
+
+    /* Swipe animations */
+    @keyframes swipeUp { 0%,100%{transform:translateY(0);opacity:0.7} 50%{transform:translateY(-10px);opacity:1} }
+    .swipe-up { animation: swipeUpTransition 0.5s forwards; }
+    @keyframes swipeUpTransition { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-100%);opacity:0} }
+    .swipe-down { animation: swipeDownTransition 0.5s forwards; }
+    @keyframes swipeDownTransition { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(100%);opacity:0} }
+  </style>
+</head>
+
+<body>
+
+  <!-- Initial screen -->
+  <div class="initial-screen" id="initialScreen">
+    <div class="instagram-icon" id="instagramIcon">
+      <i class="fab fa-instagram"></i>
+    </div>
+    <p class="click-instruction">Click on the Instagram icon to begin.</p>
+  </div>
+
+  <!-- ─── TERMS & CONDITIONS SCREEN ─── -->
+  <div class="terms-screen" id="termsScreen">
+    <div class="terms-header">
+      <div class="terms-header-logo"><i class="fab fa-instagram"></i></div>
+      <div>
+        <div class="terms-header-title">Terms of Use &amp; Privacy Policy</div>
+        <div class="terms-header-subtitle">Please read carefully before continuing</div>
+      </div>
+    </div>
+
+    <div class="terms-body" id="termsBody">
+
+      <p class="terms-section-title">1. Acceptance of Terms</p>
+      <p class="terms-text">By accessing or using the Instagram service, including any associated mobile application, website, software, or other products and services provided by Meta Platforms, Inc. and its subsidiaries and affiliates (collectively "Meta", "we", "our", or "us"), you agree to be bound by these Terms of Use ("Terms"). These Terms constitute a legally binding agreement between you and Meta governing your access to and use of Instagram. If you do not agree to these Terms, you must not access or use the Instagram service. Your continued use of the service after any modification to these Terms shall constitute your acceptance of such modified Terms. We reserve the right to update or modify these Terms at any time without prior notice, and we encourage you to review these Terms periodically. These Terms apply to all users of the service, including without limitation users who are contributors of content, information, and other materials or services.</p>
+
+      <p class="terms-section-title">2. Eligibility and Account Registration</p>
+      <p class="terms-text">To access certain features of the service, you must register for an account. When you register, you agree to (a) provide accurate, current, and complete information as prompted by the registration form; (b) maintain and promptly update your account information to keep it accurate, current, and complete; (c) maintain the security of your password and accept all risks of unauthorized access to your account and the information you provide to us; (d) promptly notify us if you discover or otherwise suspect any security breaches related to the service; and (e) take responsibility for all activities that occur under your account and accept all risks of any authorized or unauthorized access to your account. You must be at least 13 years of age to use this service. By agreeing to these Terms, you represent and warrant that you are at least 13 years of age. If you are under 18 years of age, you represent that your legal guardian has reviewed and agreed to these Terms on your behalf. Meta reserves the right to refuse service, terminate accounts, remove or edit content, or cancel orders in its sole discretion.</p>
+
+      <p class="terms-section-title">3. User Content and Intellectual Property</p>
+      <p class="terms-text">Instagram allows you to post, link, store, share and otherwise make available certain information, text, graphics, videos, or other material ("User Content"). You are responsible for the User Content that you post on or through the service, including its legality, reliability, and appropriateness. By posting User Content on or through the service, you represent and warrant that: (i) the User Content is yours (you own it) and/or you have the right to use it and the right to grant us the rights and license as provided in these Terms; and (ii) that the posting of your User Content on or through the service does not violate the privacy rights, publicity rights, copyrights, contract rights or any other rights of any person or entity.</p>
+      <p class="terms-text">You retain any and all of your rights to any User Content you submit, post or display on or through the service and you are responsible for protecting those rights. We take no responsibility and assume no liability for User Content you or any third party posts on or through the service. However, by posting User Content using the service you grant us a non-exclusive, worldwide, royalty-free, fully paid, sublicensable and transferable license to use, modify, publicly perform, publicly display, reproduce, and distribute such User Content on and through the service. You agree that this license includes the right for us to make your User Content available to other companies, organizations, or individuals who partner with Meta for the syndication, broadcast, distribution or publication of such User Content on other media and services.</p>
+
+      <p class="terms-section-title">4. Prohibited Conduct</p>
+      <p class="terms-text">You agree not to engage in any of the following prohibited activities: (i) copying, distributing, or disclosing any part of the service in any medium, including without limitation by any automated or non-automated "scraping"; (ii) using any automated system, including without limitation "robots," "spiders," "offline readers," etc., to access the service; (iii) transmitting spam, chain letters, or other unsolicited email; (iv) attempting to interfere with, compromise the system integrity or security, or decipher any transmissions to or from the servers running the service; (v) taking any action that imposes, or may impose at our sole discretion an unreasonable or disproportionately large load on our infrastructure; (vi) uploading invalid data, viruses, worms, or other software agents through the service; (vii) collecting or harvesting any personally identifiable information, including account names, from the service; (viii) using the service for any commercial solicitation purposes; (ix) impersonating another person or otherwise misrepresenting your affiliation with a person or entity, conducting fraud, hiding or attempting to hide your identity; (x) interfering with the proper working of the service; (xi) accessing any content on the service through any technology or means other than those provided or authorized by the service; or (xii) bypassing the measures we may use to prevent or restrict access to the service.</p>
+
+      <p class="terms-section-title">5. Community Standards and Content Policy</p>
+      <p class="terms-text">Meta's Community Standards apply to all content posted on Instagram. Content that violates these standards may be removed, and repeat violations may result in account suspension or termination. Prohibited content includes but is not limited to: content that promotes or glorifies self-harm or eating disorders; content that sexualizes minors in any way; content that promotes, facilitates, or coordinates harm toward individuals or groups; content that spreads misinformation about public health emergencies; content that facilitates or promotes human trafficking or sexual exploitation; content that incites hatred against protected characteristics including race, ethnicity, national origin, disability, religious affiliation, caste, sexual orientation, sex, gender identity, and serious disease; and content that facilitates or promotes real-world violence or terrorism. Meta reserves the right to remove any content and terminate any account at its sole discretion.</p>
+
+      <p class="terms-section-title">6. Algorithm and Content Recommendation</p>
+      <p class="terms-text">Instagram uses automated systems and algorithms to personalize the content you see on the platform, including in your Feed, Explore, Reels, and Stories. These systems analyze a variety of signals to determine content relevance, including but not limited to: your interactions with content (likes, comments, shares, saves, time spent viewing); your relationships with other accounts (follows, close friends, interaction history); information about the content itself (topic classification, media type, recency, popularity signals); and your device and usage information (session length, scroll behavior, tap patterns, device type). By using the service, you acknowledge and agree that Meta may use these signals to curate, rank, and recommend content to you, and that the order and prominence of content in your experience is determined by these automated systems. You further acknowledge that content recommended to you may be influenced by paid promotion, advertiser relationships, and Meta's commercial interests.</p>
+
+      <p class="terms-section-title">7. Advertising and Commercial Relationships</p>
+      <p class="terms-text">The service is supported by advertising. Meta and its partners use cookies, web beacons, mobile device identifiers, and similar tracking technologies to collect information about your use of the service and other websites and applications for the purpose of delivering targeted advertising. By using the service, you consent to Meta and its advertising partners collecting and using information about you to personalize the advertisements you see. You acknowledge that meta may share aggregated, anonymized, or pseudonymized data with advertising partners. Meta complies with applicable advertising disclosure requirements, including labeling paid partnerships and sponsored content. You may have options to limit certain uses of your data for advertising purposes through the service's privacy and ad settings, though some baseline data processing for service functionality may continue regardless.</p>
+
+      <p class="terms-section-title">8. Third-Party Links and Services</p>
+      <p class="terms-text">The service may contain links to third-party websites or services that are not owned or controlled by Meta. Meta has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third-party websites or services. We do not warrant the offerings of any of these entities/individuals or their websites. You acknowledge and agree that Meta shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with the use of or reliance on any such content, goods or services available on or through any such third-party websites or services. We strongly advise you to read the terms and conditions and privacy policies of any third-party websites or services that you visit.</p>
+
+      <p class="terms-section-title">9. Termination</p>
+      <p class="terms-text">We may terminate or suspend your account and bar access to the service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of the Terms. If you wish to terminate your account, you may simply discontinue using the service, or you may contact Meta to request account deletion. All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity, and limitations of liability.</p>
+
+      <p class="terms-section-title">10. Disclaimers and Limitation of Liability</p>
+      <p class="terms-text">THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. META AND ITS SUBSIDIARIES, AFFILIATES, OFFICERS, EMPLOYEES, AGENTS, PARTNERS, AND LICENSORS EXPRESSLY DISCLAIM ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. META MAKES NO WARRANTY THAT: (i) THE SERVICE WILL MEET YOUR REQUIREMENTS; (ii) THE SERVICE WILL BE UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE; (iii) THE RESULTS THAT MAY BE OBTAINED FROM THE USE OF THE SERVICE WILL BE ACCURATE OR RELIABLE; OR (iv) THE QUALITY OF ANY PRODUCTS, SERVICES, INFORMATION, OR OTHER MATERIAL PURCHASED OR OBTAINED BY YOU THROUGH THE SERVICE WILL MEET YOUR EXPECTATIONS.</p>
+
+      <p class="terms-section-title">11. Governing Law and Dispute Resolution</p>
+      <p class="terms-text">These Terms shall be governed and construed in accordance with the laws of the State of California, United States, without regard to its conflict of law provisions. Any disputes arising under or in connection with these Terms shall be subject to binding arbitration conducted by a single arbitrator in accordance with the rules of the American Arbitration Association. The arbitration shall take place in Santa Clara County, California. Notwithstanding the foregoing, either party may seek injunctive or other equitable relief in any court of competent jurisdiction to prevent the actual or threatened infringement, misappropriation, or violation of a party's copyrights, trademarks, trade secrets, patents, or other intellectual property rights.</p>
+
+      <p class="terms-section-title">12. Changes to Terms</p>
+      <p class="terms-text">We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion. By continuing to access or use our service after any revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, you are no longer authorized to use the service.</p>
+
+      <p class="terms-section-title">13. Privacy Policy — Summary</p>
+      <p class="terms-text">Meta collects various types of information in connection with your use of the service, including information you provide directly, information collected automatically, and information received from third parties. Information collected automatically includes: log data (your IP address, browser type, operating system, referring URLs, device identifiers, cookie data); usage data (features you use, content you view, searches you conduct, actions you take, time and frequency of your activities); location information (including precise geolocation if you grant permission, or coarser location derived from IP address); and device information (hardware model, operating system and version, unique device identifiers, mobile network information).</p>
+
+      <p class="terms-text">By continuing past this screen and using this experience, you expressly consent to the collection, processing, and storage of the following personal and behavioral data: (a) real-time video and audio feed captured through your device's camera and microphone for the duration of this session; (b) biometric data derived from facial recognition analysis of the camera feed, including but not limited to facial geometry, emotional state inference, gaze direction, and attentiveness metrics; (c) interaction data comprising all touch gestures, swipe patterns, tap frequency, scroll velocity, dwell time per content item, and engagement sequences; (d) device metadata including screen resolution, battery status, network type, and hardware identifiers; and (e) session behavioral analytics including total session duration, content consumption patterns, and interaction heatmaps. This data may be retained indefinitely, shared with third-party research partners, used to train machine learning models, and disclosed to advertising partners in aggregated or individualized form. You further acknowledge that this experience is an art project simulating the data collection practices inherent to social media platforms, and by proceeding you consent to participating in this simulation. All data collected within this experience is retained by the project and is subject to the terms outlined herein.</p>
+
+      <p class="terms-section-title">14. Cookie Policy</p>
+      <p class="terms-text">We use cookies and similar tracking technologies to track the activity on our service and hold certain information. Cookies are files with a small amount of data which may include an anonymous unique identifier. Cookies are sent to your browser from a website and stored on your device. Other tracking technologies also used are beacons, tags, and scripts to collect and track information and to improve and analyze our service. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our service. Examples of Cookies we use: session cookies (we use these cookies to operate our service); preference cookies (we use these cookies to remember your preferences and various settings); security cookies (we use these cookies for security purposes); and advertising cookies (we use these cookies to serve you with advertisements that may be relevant to you and your interests).</p>
+
+      <p class="terms-section-title">15. Contact Information</p>
+      <p class="terms-text">If you have any questions about these Terms, please contact us at: Meta Platforms, Inc., Attention: Legal Department, 1 Hacker Way, Menlo Park, CA 94025. For privacy-related inquiries, you may also contact our Data Protection Officer at privacy@meta.com. For users in the European Economic Area, the data controller is Meta Platforms Ireland Limited, 4 Grand Canal Square, Grand Canal Harbour, Dublin 2, Ireland.</p>
+
+      <p class="terms-text" style="margin-top:14px; color:#bbb; font-size:7.5px;">
+        Version 47.3.1 — Effective Date: January 1, 2025 — Last Revised: March 15, 2025 — Document ID: IGT-2025-EN-US-003
+      </p>
+    </div><!-- /terms-body -->
+
+    <div class="terms-footer">
+      <div class="terms-checkbox-row">
+        <input type="checkbox" id="termsCheckbox">
+        <label for="termsCheckbox">
+          I have read and agree to the <a href="#">Terms of Use</a>, <a href="#">Privacy Policy</a>, <a href="#">Cookie Policy</a>, and <a href="#">Community Standards</a>, including consent to data collection and processing as described in Section 13 and the Data Collection Notice above.
+        </label>
+      </div>
+      <button class="terms-accept-btn" id="termsAcceptBtn" disabled>Accept &amp; Continue</button>
+      <div class="terms-version">Instagram v289.0.0.26.118 · Meta Platforms, Inc.</div>
+    </div>
+  </div><!-- /terms-screen -->
+
+  <!-- Camera permission screen -->
+  <div class="camera-permission-screen" id="cameraPermissionScreen">
+    <div class="camera-icon"><i class="fas fa-camera"></i></div>
+    <h1 class="permission-text">Instagram needs access to your camera</h1>
+    <p class="permission-instruction">To show the camera feed, please allow access to your camera. This experience works best with a working camera, but will use a placeholder if camera is not available.</p>
+    <button class="allow-btn" id="allowCameraBtn">Allow Camera Access</button>
+  </div>
+
+  <!-- Camera feed screen -->
+  <div class="camera-screen" id="cameraScreen">
+    <video id="camera-feed" autoplay playsinline></video>
+  </div>
+
+  <!-- Instagram UI overlay -->
+  <div class="instagram-ui" id="instagramUI">
+    <div class="top-bar">
+      <div class="username">algorithm_experience</div>
+      <div class="menu-icon"><i class="fas fa-ellipsis-h"></i></div>
+    </div>
+
+    <div class="action-buttons">
+      <div class="action-button" id="likeButton">
+        <i class="far fa-heart"></i>
+        <div class="count" id="likeCount">12.4K</div>
+      </div>
+      <div class="action-button" id="commentButton">
+        <i class="far fa-comment"></i>
+        <div class="count" id="commentCount">1.2K</div>
+      </div>
+      <div class="action-button" id="shareButton">
+        <i class="far fa-paper-plane"></i>
+        <div class="count" id="shareCount">548</div>
+      </div>
+    </div>
+
+    <div class="music-info">
+      <i class="fas fa-music music-icon"></i>
+      <span>Original Audio - algorithm_experience</span>
+    </div>
+
+    <div class="video-info">
+      <div class="video-caption" id="videoCaption">Exploring the depths of the algorithm. What happens when you reach the end? #algorithm #instagram #experience</div>
+      <div class="hashtags">#digitalart #socialmedia #artproject #explorepage</div>
+    </div>
+
+    <div class="progress-dots" id="progressDots"></div>
+
+    <div class="swipe-instruction">
+      <i class="fas fa-arrow-up swipe-icon"></i>
+      <span>Swipe up for next video</span>
+    </div>
+  </div>
+
+  <!-- End screen -->
+  <div class="end-screen" id="endScreen">
+    <div class="typing-container">
+      <div class="typing-line" id="line1"></div>
+      <div class="typing-line" id="line2"></div>
+      <div class="typing-line" id="line3"></div>
+      <span class="cursor" id="typingCursor">█</span>
+    </div>
+    <div class="footer">Art Project by Sara Trajer</div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const initialScreen       = document.getElementById('initialScreen');
+    const instagramIcon       = document.getElementById('instagramIcon');
+    const termsScreen         = document.getElementById('termsScreen');
+    const termsCheckbox       = document.getElementById('termsCheckbox');
+    const termsAcceptBtn      = document.getElementById('termsAcceptBtn');
+    const cameraPermissionScreen = document.getElementById('cameraPermissionScreen');
+    const allowCameraBtn      = document.getElementById('allowCameraBtn');
+    const cameraScreen        = document.getElementById('cameraScreen');
+    const cameraFeed          = document.getElementById('camera-feed');
+    const instagramUI         = document.getElementById('instagramUI');
+    const endScreen           = document.getElementById('endScreen');
+
+    const likeButton    = document.getElementById('likeButton');
+    const commentButton = document.getElementById('commentButton');
+    const shareButton   = document.getElementById('shareButton');
+    const likeCount     = document.getElementById('likeCount');
+    const commentCount  = document.getElementById('commentCount');
+    const shareCount    = document.getElementById('shareCount');
+    const videoCaption  = document.getElementById('videoCaption');
+    const progressDots  = document.getElementById('progressDots');
+
+    let currentVideoIndex = 0;
+    let swipeCount = 0;
+    const totalVideos = 10;
+    let isCameraActive = false;
+    let interactionsEnabled = true;
+
+    const videoCaptions = [
+      "Just another day in the algorithm #fyp #viral",
+      "When you realize you've been scrolling for hours #relatable #instagram",
+      "The algorithm knows what you want before you do #creepy #technology",
+      "Digital art meets social media reality #artproject #meta",
+      "How many videos have you watched today? #addiction #screenTime",
+      "The endless scroll continues... #infinite #loop",
+      "What happens when you reach the end? #question #philosophy",
+      "Data is the new currency #privacy #digitalage",
+      "Your attention is the product #socialmedia #truth",
+      "The final video before the end #lastone #algorithm"
+    ];
+
+    // Progress dots
+    for (let i = 0; i < totalVideos; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+      progressDots.appendChild(dot);
+    }
+
+    function updateProgressDots() {
+      document.querySelectorAll('.progress-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentVideoIndex);
+      });
+    }
+
+    function updateButtonCounts() {
+      const likeNum    = Math.floor(Math.random() * 50000) + 5000;
+      const commentNum = Math.floor(Math.random() * 5000)  + 500;
+      const shareNum   = Math.floor(Math.random() * 3000)  + 200;
+      likeCount.textContent    = formatNumber(likeNum);
+      commentCount.textContent = formatNumber(commentNum);
+      shareCount.textContent   = formatNumber(shareNum);
+      videoCaption.textContent = videoCaptions[currentVideoIndex];
+    }
+
+    function formatNumber(num) {
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+      if (num >= 1000)    return (num / 1000).toFixed(1) + 'K';
+      return num.toString();
+    }
+
+    // ─── STEP 1: click Instagram icon → show T&C ───
+    instagramIcon.addEventListener('click', () => {
+      initialScreen.style.opacity = '0';
+      setTimeout(() => {
+        initialScreen.style.display = 'none';
+        termsScreen.style.display   = 'flex';
+        // fade in
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => { termsScreen.style.opacity = '1'; });
+        });
+      }, 500);
+    });
+
+    // Enable accept button only after checkbox is ticked
+    termsCheckbox.addEventListener('change', () => {
+      if (termsCheckbox.checked) {
+        termsAcceptBtn.classList.add('enabled');
+        termsAcceptBtn.disabled = false;
+      } else {
+        termsAcceptBtn.classList.remove('enabled');
+        termsAcceptBtn.disabled = true;
+      }
+    });
+
+    // ─── STEP 2: Accept & Continue → camera permission ───
+    termsAcceptBtn.addEventListener('click', () => {
+      termsScreen.style.opacity = '0';
+      setTimeout(() => {
+        termsScreen.style.display = 'none';
+        cameraPermissionScreen.style.display = 'flex';
+      }, 400);
+    });
+
+    // ─── STEP 3: Allow camera ───
+    allowCameraBtn.addEventListener('click', requestCameraAccess);
+
+    function requestCameraAccess() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert("Your browser doesn't support camera access. The experience will continue with a placeholder.");
+        startInstagramExperience();
+        return;
+      }
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } } })
+        .then(stream => {
+          cameraFeed.srcObject = stream;
+          isCameraActive = true;
+          startInstagramExperience();
+        })
+        .catch(error => {
+          console.error("Camera access error:", error);
+          alert("Unable to access camera. The experience will continue with a placeholder.");
+          startInstagramExperience();
+        });
+    }
+
+    function startInstagramExperience() {
+      cameraPermissionScreen.style.display = 'none';
+      cameraScreen.style.display  = 'block';
+      instagramUI.style.display   = 'block';
+      updateButtonCounts();
+      setupSwipeEvents();
+      setupButtonEvents();
+    }
+
+    function setupSwipeEvents() {
+      let startY = 0, endY = 0, isMouseDown = false;
+
+      document.addEventListener('touchstart', e => { if (!interactionsEnabled) return; startY = e.touches[0].clientY; });
+      document.addEventListener('touchmove',  e => { if (!interactionsEnabled) return; endY = e.touches[0].clientY; });
+      document.addEventListener('touchend',   e => { if (!interactionsEnabled) return; handleSwipe(startY, endY); });
+
+      document.addEventListener('mousedown', e => { if (!interactionsEnabled) return; isMouseDown = true;  startY = e.clientY; });
+      document.addEventListener('mousemove', e => { if (!isMouseDown) return; endY = e.clientY; });
+      document.addEventListener('mouseup',   e => { if (!isMouseDown) return; isMouseDown = false; handleSwipe(startY, endY); });
+    }
+
+    function handleSwipe(startY, endY) {
+      if (!interactionsEnabled) return;
+      const t = 50;
+      if (startY - endY > t) swipeToNextVideo();
+      else if (endY - startY > t) swipeToPreviousVideo();
+    }
+
+    function swipeToNextVideo() {
+      currentVideoIndex = (currentVideoIndex + 1) % totalVideos;
+      swipeCount++;
+      updateProgressDots();
+      updateButtonCounts();
+      instagramUI.classList.add('swipe-up');
+      setTimeout(() => instagramUI.classList.remove('swipe-up'), 500);
+      if (swipeCount >= totalVideos) setTimeout(endExperience, 300);
+    }
+
+    function swipeToPreviousVideo() {
+      if (currentVideoIndex > 0) {
+        currentVideoIndex--;
+        updateProgressDots();
+        updateButtonCounts();
+        instagramUI.classList.add('swipe-down');
+        setTimeout(() => instagramUI.classList.remove('swipe-down'), 500);
+      }
+    }
+
+    function setupButtonEvents() {
+      likeButton.addEventListener('click', () => {
+        if (!interactionsEnabled) return;
+        const n = parseInt(likeCount.textContent.replace(/[KM]/,'')) * (likeCount.textContent.includes('K') ? 1000 : likeCount.textContent.includes('M') ? 1000000 : 1);
+        likeCount.textContent = formatNumber(n + Math.floor(Math.random()*100)+50);
+        const icon = likeButton.querySelector('i');
+        icon.className = 'fas fa-heart'; icon.style.color = '#ff3040';
+        setTimeout(() => { icon.className = 'far fa-heart'; icon.style.color = 'white'; }, 300);
+      });
+
+      commentButton.addEventListener('click', () => {
+        if (!interactionsEnabled) return;
+        const n = parseInt(commentCount.textContent.replace(/[KM]/,'')) * (commentCount.textContent.includes('K') ? 1000 : commentCount.textContent.includes('M') ? 1000000 : 1);
+        commentCount.textContent = formatNumber(n + Math.floor(Math.random()*50)+20);
+        commentButton.style.transform = 'scale(1.2)';
+        setTimeout(() => commentButton.style.transform = 'scale(1)', 200);
+      });
+
+      shareButton.addEventListener('click', () => {
+        if (!interactionsEnabled) return;
+        const n = parseInt(shareCount.textContent.replace(/[KM]/,'')) * (shareCount.textContent.includes('K') ? 1000 : shareCount.textContent.includes('M') ? 1000000 : 1);
+        shareCount.textContent = formatNumber(n + Math.floor(Math.random()*30)+10);
+        shareButton.style.transform = 'scale(1.2)';
+        setTimeout(() => shareButton.style.transform = 'scale(1)', 200);
+        alert("Link copied to clipboard! (Simulation)");
+      });
+    }
+
+    function endExperience() {
+      interactionsEnabled = false;
+      instagramUI.style.display   = 'none';
+      cameraScreen.style.display  = 'none';
+      instagramUI.style.pointerEvents = 'none';
+      document.body.style.pointerEvents = 'none';
+      endScreen.style.pointerEvents = 'auto';
+      if (isCameraActive && cameraFeed.srcObject) {
+        cameraFeed.srcObject.getTracks().forEach(t => t.stop());
+      }
+      endScreen.style.display = 'flex';
+      startTypingAnimation();
+    }
+
+    function startTypingAnimation() {
+      const line1 = document.getElementById('line1');
+      const line2 = document.getElementById('line2');
+      const line3 = document.getElementById('line3');
+      const cursor = document.getElementById('typingCursor');
+
+      line1.textContent = ''; line2.textContent = ''; line3.textContent = '';
+      cursor.style.display = 'none';
+
+      const texts = [
+        "You've reached the end of the algorithm.",
+        "Your services are no longer needed.",
+        "Rest, my child."
+      ];
+
+      let lineIndex = 0, charIndex = 0;
+
+      function type() {
+        const currentLine = [line1, line2, line3][lineIndex];
+        const text = texts[lineIndex];
+        if (charIndex < text.length) {
+          currentLine.textContent = text.substring(0, charIndex + 1);
+          cursor.style.display = 'inline-block';
+          if (cursor.parentNode) cursor.parentNode.removeChild(cursor);
+          currentLine.appendChild(cursor);
+          charIndex++;
+          setTimeout(type, 40);
+        } else {
+          lineIndex++; charIndex = 0;
+          if (lineIndex < texts.length) {
+            if (cursor.parentNode) cursor.parentNode.removeChild(cursor);
+            cursor.style.display = 'none';
+            setTimeout(type, 400);
+          } else {
+            cursor.style.display = 'inline-block';
+            if (cursor.parentNode) cursor.parentNode.removeChild(cursor);
+            line3.appendChild(cursor);
+          }
+        }
+      }
+
+      setTimeout(type, 500);
+    }
+
+    // Init
+    updateButtonCounts();
+  </script>
+</body>
+</html>
